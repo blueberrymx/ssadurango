@@ -36,6 +36,7 @@
   --bg-hero-3: url('../images/backgrounds/bg-hero-slide-3.jpg');
   --bg-hero-4: url('../images/backgrounds/bg-hero-slide-4.jpg');
   --bg-hero-5: url('../images/backgrounds/bg-hero-slide-5.jpg');
+  --bg-hero-6: url('../images/backgrounds/bg-hero-slide-6.jpg');
   --bg-services: url('../images/backgrounds/bg-servicios.jpg');
   --bg-premium-celosias: url('../images/backgrounds/bg-premium-celosias.jpg');
   --bg-smart-locks: url('../images/backgrounds/bg-smart-locks.jpg');
@@ -57,6 +58,39 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Compensación de Scroll para la Barra Fija (Scroll-Margin-Top exacto bajo el navbar para encuadrar contenidos) */
+#inicio,
+#servicios,
+#portones,
+#premium-celosias,
+#fraccionamientos,
+#cerraduras,
+#climas,
+#mantenimiento,
+#red-aliados,
+#cotizador,
+#contacto,
+.scroll-mt-header {
+  scroll-margin-top: 104px;
+}
+
+@media (max-width: 639.98px) {
+  #inicio,
+  #servicios,
+  #portones,
+  #premium-celosias,
+  #fraccionamientos,
+  #cerraduras,
+  #climas,
+  #mantenimiento,
+  #red-aliados,
+  #cotizador,
+  #contacto,
+  .scroll-mt-header {
+    scroll-margin-top: 88px;
+  }
 }
 
 body {
@@ -162,11 +196,47 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   background-image: linear-gradient(to right, rgba(11, 37, 69, 0.40) 0%, rgba(11, 37, 69, 0.30) 50%, rgba(0, 102, 255, 0.18) 100%), var(--bg-hero-4);
 }
 .bg-slide-5 {
-  background-image: linear-gradient(to right, rgba(11, 37, 69, 0.40) 0%, rgba(11, 37, 69, 0.30) 50%, rgba(0, 102, 255, 0.18) 100%), var(--bg-hero-5);
+  background-image: linear-gradient(to right, rgba(11, 37, 69, 0.45) 0%, rgba(11, 37, 69, 0.35) 50%, rgba(2, 132, 199, 0.20) 100%), var(--bg-hero-5);
+}
+.bg-slide-6 {
+  background-image: linear-gradient(to right, rgba(11, 37, 69, 0.50) 0%, rgba(11, 37, 69, 0.35) 50%, rgba(0, 102, 255, 0.20) 100%), var(--bg-hero-6);
 }
 
 .hero-text-shadow {
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95), 0 4px 28px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 1);
+}
+
+#inicio {
+  position: relative;
+  z-index: 10;
+}
+
+#servicios {
+  overflow: visible !important;
+  position: relative;
+  z-index: 20;
+}
+
+/* Cuadro de Indicadores Superpuesto a Caballo (50% sobre el Slider, 50% sobre Servicios) */
+.hero-trust-overlap-card {
+  position: relative;
+  z-index: 30;
+  top: -55px; /* Mitad exacta de la tarjeta superpuesta sobre el fondo de la diapositiva del slider */
+  margin-bottom: -35px; /* Compensa el flujo visual sin alterar el inicio de la sección de servicios */
+}
+
+@media (max-width: 639.98px) {
+  .hero-trust-overlap-card {
+    top: -65px;
+    margin-bottom: -45px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-trust-overlap-card {
+    top: -55px;
+    margin-bottom: -35px;
+  }
 }
 
 .bg-section-services {
@@ -255,12 +325,39 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 .glass-nav-light {
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 2px 15px rgba(15, 39, 68, 0.07);
+  box-shadow: 0 4px 20px rgba(11, 37, 69, 0.08);
   border-bottom: 1px solid #E2E8F0;
   padding: 0 !important;
+}
+
+/* Indicador Visual de Estado Activo en Menú Superior (Scrollspy) */
+.nav-link-item {
+  position: relative;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.nav-link-item.active {
+  color: var(--color-accent-orange) !important;
+  font-weight: 800 !important;
+}
+
+.nav-link-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 3px;
+  background-color: var(--color-accent-orange);
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(255, 102, 0, 0.45);
 }
 
 /* Logo Oficial Limpio y Ampliado al Máximo en Header (Sin bloque de fondo) */
@@ -387,7 +484,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 99;
+  z-index: 1000;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 @media (min-width: 640px) {
@@ -415,12 +512,15 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   100% { transform: scale(1.35); opacity: 0; }
 }
 
-/* Botón Flotante de Mantenimiento / Reparación Rápida (Esquina Inferior Izquierda) */
+/* ==========================================================================
+   BOTÓN FLOTANTE DE MANTENIMIENTO / REPARACIÓN RÁPIDA (ESQUINA INFERIOR IZQ)
+   Fondo naranja permanente de alto contraste, sombra oscura y texto blanco.
+   ========================================================================== */
 .floating-repair-btn {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  z-index: 99;
+  z-index: 1000;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 @media (min-width: 640px) {
@@ -432,15 +532,150 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .floating-repair-btn:hover {
   transform: scale(1.05) translateY(-3px);
 }
+
+.repair-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, #FF6600 0%, #E65C00 100%) !important;
+  color: #FFFFFF !important;
+  padding: 0.65rem 1.15rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.5), 0 4px 12px -1px rgba(255, 102, 0, 0.55);
+  text-decoration: none;
+  position: relative;
+  overflow: visible;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: width 0.35s cubic-bezier(0.34, 1.25, 0.64, 1), padding 0.35s ease, gap 0.35s ease, transform 0.25s ease, background 0.25s ease;
+}
+
+.repair-btn-pill:hover {
+  background: linear-gradient(135deg, #FF7A1A 0%, #FF6600 100%) !important;
+  box-shadow: 0 14px 28px -3px rgba(0, 0, 0, 0.6), 0 6px 16px -1px rgba(255, 102, 0, 0.65);
+}
+
+.repair-text-wrap {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.15;
+  transition: max-width 0.35s ease, opacity 0.25s ease;
+  overflow: hidden;
+}
+
+.repair-btn-pill .repair-title {
+  color: #FFFFFF !important;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  line-height: 1.1;
+}
+
+.repair-btn-pill .repair-sub {
+  color: #FFFFFF !important;
+  font-size: 13.5px;
+  font-weight: 800;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  line-height: 1.15;
+}
+
 .repair-pulse {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  inset: -3px;
   border-radius: 9999px;
   background: #FF6600;
-  opacity: 0.4;
+  opacity: 0.45;
   animation: pulse-ring 2.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
   pointer-events: none;
+  z-index: -1;
+}
+
+/* Estado Colapsado a solo circulito con icono de llave al pasar de servicios */
+.floating-repair-btn.is-collapsed .repair-btn-pill {
+  width: 50px;
+  height: 50px;
+  padding: 0 !important;
+  justify-content: center;
+  border-radius: 9999px;
+  gap: 0;
+}
+
+.floating-repair-btn.is-collapsed .repair-text-wrap {
+  max-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+}
+
+.floating-repair-btn.is-collapsed .repair-btn-pill i {
+  width: 1.35rem;
+  height: 1.35rem;
+  transition: transform 0.3s ease;
+}
+
+/* Al acercar el cursor (hover), se despliega completo suavemente */
+.floating-repair-btn.is-collapsed:hover .repair-btn-pill {
+  width: auto;
+  padding: 0.65rem 1.15rem !important;
+  gap: 0.65rem;
+  justify-content: flex-start;
+}
+
+.floating-repair-btn.is-collapsed:hover .repair-text-wrap {
+  max-width: 260px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.floating-repair-btn.is-collapsed:hover .repair-btn-pill i {
+  transform: rotate(-15deg) scale(1.1);
+}
+
+/* Versión compacta para Celular (< 640px) */
+@media (max-width: 639.98px) {
+  .floating-repair-btn {
+    bottom: 18px;
+    left: 12px;
+  }
+  .repair-btn-pill {
+    padding: 0.5rem 0.85rem;
+    gap: 0.45rem;
+  }
+  .repair-btn-pill .repair-desktop-text {
+    display: none !important;
+  }
+  .repair-btn-pill .repair-mobile-text {
+    display: inline-block !important;
+    color: #FFFFFF !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  .floating-repair-btn.is-collapsed .repair-btn-pill {
+    width: 44px;
+    height: 44px;
+    padding: 0 !important;
+  }
+  .floating-repair-btn.is-collapsed:hover .repair-btn-pill {
+    width: auto;
+    padding: 0.5rem 0.85rem !important;
+    gap: 0.45rem;
+  }
+}
+@media (min-width: 640px) {
+  .repair-btn-pill .repair-mobile-text {
+    display: none !important;
+  }
+  .repair-btn-pill .repair-desktop-text {
+    display: block !important;
+  }
 }
 
 /* ==========================================================================
@@ -591,25 +826,111 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 /* ==========================================================================
-   BOTONES SELECTORES DE SLIDES DEL HERO (PESTAÑAS)
+   CONTROLES Y BOTONES SELECTORES DE SLIDES DEL HERO (PESTAÑAS)
+   Elevados sobre el banner hero, con panel semi-transparente oscuro,
+   alto contraste sobre cualquier fotografía y sin traslape con botones flotantes.
    ========================================================================== */
+.hero-controls-bar {
+  position: absolute;
+  bottom: 104px; /* Posición vertical elevada por encima del cuadro superpuesto de indicadores */
+  left: 0;
+  right: 0;
+  z-index: 35;
+  pointer-events: none;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.hero-controls-bar > * {
+  pointer-events: auto;
+}
+
+@media (max-width: 639.98px) {
+  .hero-controls-bar {
+    bottom: 78px; /* En móvil se eleva por encima del cuadro superpuesto sin empalmarse con el botón CTA */
+    padding-bottom: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .hero-tabs-glass-panel {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 7px !important;
+    margin: 0 auto !important;
+  }
+
+  .hero-tab-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+    border-radius: 9999px !important; /* Circulitos perfectos */
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .hero-tab-btn span {
+    display: none !important; /* Oculta texto en móvil: deja solo circulitos e iconos */
+  }
+
+  .hero-tab-btn i {
+    width: 15px !important;
+    height: 15px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-controls-bar {
+    bottom: 112px; /* En escritorio se ubica cómodamente por encima del cuadro de indicadores y del botón de urgencias */
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Botones de navegación flotando directamente sobre el slide sin bloque/badge de fondo azul */
+.hero-tabs-glass-panel,
+.hero-nav-glass-panel {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 .hero-tab-btn {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #CBD5E1 !important;
-  transition: all 0.3s ease !important;
+  background-color: rgba(11, 37, 69, 0.82) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: #FFFFFF !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  font-weight: 700;
+  transition: all 0.25s ease !important;
 }
 
 .hero-tab-btn:hover {
-  background-color: rgba(255, 255, 255, 0.18) !important;
+  background-color: rgba(255, 255, 255, 0.25) !important;
   color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  transform: translateY(-1px);
 }
 
 .hero-tab-btn.active {
-  background-color: var(--color-accent-orange) !important;
-  border-color: var(--color-accent-orange) !important;
+  background: linear-gradient(135deg, #FF6600 0%, #EA580C 100%) !important;
+  border-color: #FFA366 !important;
   color: #FFFFFF !important;
-  box-shadow: 0 4px 16px rgba(255, 102, 0, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(255, 102, 0, 0.6), 0 1px 4px rgba(0, 0, 0, 0.5) !important;
 }
 
 .hero-tab-btn.active i,
@@ -619,10 +940,11 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 /* ==========================================================================
    CARRUSELES MÓVILES (< 768px) & GRIDS DESKTOP (>= 768px)
-   (Fraccionamientos, Climas, Proceso SSA, Testimonios)
+   (Fraccionamientos, Climas, Mantenimiento, Proceso SSA, Testimonios)
    ========================================================================== */
 .fraccionamientos-swiper,
 .climas-swiper,
+.mantenimiento-swiper,
 .proceso-swiper,
 .testimonios-swiper {
   width: 100%;
@@ -631,6 +953,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 @media (max-width: 767.98px) {
   .fraccionamientos-swiper,
   .climas-swiper,
+  .mantenimiento-swiper,
   .proceso-swiper,
   .testimonios-swiper {
     overflow: hidden !important;
@@ -638,6 +961,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
   .fraccionamientos-swiper .swiper-slide,
   .climas-swiper .swiper-slide,
+  .mantenimiento-swiper .swiper-slide,
   .proceso-swiper .swiper-slide,
   .testimonios-swiper .swiper-slide {
     height: auto !important;
@@ -646,6 +970,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
   .fraccionamientos-swiper .reveal-scale,
   .climas-swiper .reveal-scale,
+  .mantenimiento-swiper .reveal-scale,
   .proceso-swiper .reveal-scale,
   .testimonios-swiper .reveal-scale {
     opacity: 1 !important;
@@ -653,6 +978,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
   .fraccionamientos-swiper-pagination .swiper-pagination-bullet,
   .climas-swiper-pagination .swiper-pagination-bullet,
+  .mantenimiento-swiper-pagination .swiper-pagination-bullet,
   .proceso-swiper-pagination .swiper-pagination-bullet,
   .testimonios-swiper-pagination .swiper-pagination-bullet {
     width: 8px !important;
@@ -665,6 +991,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
   .fraccionamientos-swiper-pagination .swiper-pagination-bullet-active,
   .climas-swiper-pagination .swiper-pagination-bullet-active,
+  .mantenimiento-swiper-pagination .swiper-pagination-bullet-active,
   .proceso-swiper-pagination .swiper-pagination-bullet-active,
   .testimonios-swiper-pagination .swiper-pagination-bullet-active {
     width: 24px !important;
@@ -677,11 +1004,13 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 @media (min-width: 768px) {
   .fraccionamientos-swiper,
   .climas-swiper,
+  .mantenimiento-swiper,
   .proceso-swiper,
   .testimonios-swiper {
     overflow: visible !important;
   }
   .fraccionamientos-swiper .swiper-wrapper.fraccionamientos-grid-wrapper,
+  .mantenimiento-swiper .swiper-wrapper.mantenimiento-grid-wrapper,
   .proceso-swiper .swiper-wrapper.proceso-grid-wrapper {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -708,6 +1037,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
   @media (min-width: 1024px) {
     .fraccionamientos-swiper .swiper-wrapper.fraccionamientos-grid-wrapper,
+    .mantenimiento-swiper .swiper-wrapper.mantenimiento-grid-wrapper,
     .proceso-swiper .swiper-wrapper.proceso-grid-wrapper {
       grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
       gap: 2rem !important;
@@ -722,6 +1052,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   }
   .fraccionamientos-swiper .swiper-slide,
   .climas-swiper .swiper-slide,
+  .mantenimiento-swiper .swiper-slide,
   .proceso-swiper .swiper-slide,
   .testimonios-swiper .swiper-slide {
     width: auto !important;
@@ -730,6 +1061,99 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   COTIZADOR COMPACTO & CARGA MULTI-ARCHIVO (HASTA 4 FOTOS)
+   ========================================================================== */
+.quote-card-compact {
+  padding: 1.5rem 1.25rem !important;
+}
+@media (min-width: 640px) {
+  .quote-card-compact {
+    padding: 2rem 2.5rem !important;
+  }
+}
+
+.input-compact {
+  padding-top: 0.55rem !important;
+  padding-bottom: 0.55rem !important;
+  font-size: 0.8125rem !important;
+}
+@media (min-width: 640px) {
+  .input-compact {
+    padding-top: 0.65rem !important;
+    padding-bottom: 0.65rem !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+.upload-dropzone-compact {
+  padding: 0.75rem 1rem !important;
+}
+
+.multi-image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+@media (min-width: 640px) {
+  .multi-image-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.multi-image-card {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.multi-image-card img {
+  width: 100%;
+  height: 64px;
+  object-fit: cover;
+  display: block;
+}
+
+.multi-image-card .card-info {
+  padding: 0.25rem 0.4rem;
+  background: #FFFFFF;
+}
+
+.multi-image-card .remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background: rgba(220, 38, 38, 0.9);
+  color: #FFFFFF;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.multi-image-card .remove-btn:hover {
+  transform: scale(1.15);
+  background: #DC2626;
+}
+
+/* ==========================================================================
+   SUBSECCIÓN COMERCIAL EN CERRADURAS / CONTROL DE ACCESO
+   ========================================================================== */
+.commercial-access-block {
+  background: linear-gradient(135deg, rgba(11, 37, 69, 0.95) 0%, rgba(15, 23, 42, 0.92) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 36px -8px rgba(11, 37, 69, 0.35);
+}
+
 
 
 
