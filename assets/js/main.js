@@ -22,8 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetElement = document.querySelector(targetId);
     if (!targetElement) return;
 
-    const navHeight = document.getElementById('main-nav')?.offsetHeight || 80;
-    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - (navHeight - 10);
+    const navHeight = document.getElementById('main-nav')?.offsetHeight || 75;
+    // Margen de respiro visual cómodo por ENCIMA del badge para que el texto arriba del título se lea con total claridad
+    const breathingSpaceAboveBadge = window.innerWidth < 640 ? 18 : 26;
+
+    // Localizar el badge o encabezado superior exacto de la sección de destino
+    let badge = null;
+    if (targetId === '#servicios') {
+      badge = targetElement.querySelector('[data-catalog-badge], .catalog-badge');
+    } else {
+      badge = targetElement.querySelector('[data-quote-badge], .tech-badge-dark, .inline-flex, span.uppercase');
+    }
+
+    let targetPosition = 0;
+    if (badge) {
+      // Posición del badge calculada con suficiente espacio superior bajo la barra fija
+      const badgeRect = badge.getBoundingClientRect();
+      targetPosition = badgeRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+    } else {
+      const targetRect = targetElement.getBoundingClientRect();
+      targetPosition = targetRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+    }
+
+    targetPosition = Math.max(0, targetPosition);
     const startPosition = window.pageYOffset;
     const distance = targetPosition - startPosition;
     let startTime = null;
@@ -103,6 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
           e.preventDefault();
           smoothScrollWithSweep(href, 1100);
           closeMobileMenu();
+          if (typeof setActiveNav === 'function') {
+            setActiveNav(href.replace('#', ''));
+          }
         }
       }
     });
@@ -222,10 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4.2 Carruseles Móviles Adicionales (< 768px): Fraccionamientos, Climas, Proceso SSA y Testimonios
+  // 4.2 Carruseles Móviles Adicionales (< 768px): Fraccionamientos, Climas, Mantenimiento, Proceso SSA y Testimonios
   const additionalMobileSwipers = [
     { selector: '.fraccionamientos-swiper', next: '.fraccionamientos-next-btn', prev: '.fraccionamientos-prev-btn', pagination: '.fraccionamientos-swiper-pagination' },
     { selector: '.climas-swiper', next: '.climas-next-btn', prev: '.climas-prev-btn', pagination: '.climas-swiper-pagination' },
+    { selector: '.mantenimiento-swiper', next: '.mantenimiento-next-btn', prev: '.mantenimiento-prev-btn', pagination: '.mantenimiento-swiper-pagination' },
     { selector: '.proceso-swiper', next: '.proceso-next-btn', prev: '.proceso-prev-btn', pagination: '.proceso-swiper-pagination' },
     { selector: '.testimonios-swiper', next: '.testimonios-next-btn', prev: '.testimonios-prev-btn', pagination: '.testimonios-swiper-pagination' }
   ];
@@ -270,6 +295,87 @@ document.addEventListener('DOMContentLoaded', () => {
       navbar.classList.remove('shadow-xl', 'bg-opacity-95');
     }
   });
+
+  // 5.1 Navbar Scrollspy Robusto con Detección Absoluta por BoundingClientRect
+  const trackedSectionIds = [
+    'servicios',
+    'portones',
+    'premium-celosias',
+    'fraccionamientos',
+    'cerraduras',
+    'climas',
+    'mantenimiento',
+    'cotizador',
+    'contacto'
+  ];
+
+  window.setActiveNav = function(sectionId) {
+    const links = document.querySelectorAll('#desktop-nav-links .nav-link-item, #mobile-menu .nav-link-item');
+    links.forEach(link => {
+      const href = link.getAttribute('href');
+      if (sectionId && href === `#${sectionId}`) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  };
+
+  function updateActiveNavLink() {
+    // Si está al principio de la página (Hero), no activa ninguna pestaña secundaria
+    if (window.scrollY < 80) {
+      window.setActiveNav('');
+      return;
+    }
+
+    // Si llega al final absoluto de la página, activa contacto
+    if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 60)) {
+      window.setActiveNav('contacto');
+      return;
+    }
+
+    const navEl = document.getElementById('main-nav');
+    const headerHeight = navEl ? navEl.offsetHeight : 90;
+    const triggerLine = headerHeight + 60; // Línea virtual de visión activa
+
+    let activeId = '';
+
+    for (let i = 0; i < trackedSectionIds.length; i++) {
+      const id = trackedSectionIds[i];
+      const section = document.getElementById(id);
+      if (!section) continue;
+
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= triggerLine && rect.bottom > triggerLine) {
+        activeId = id;
+        break;
+      }
+    }
+
+    window.setActiveNav(activeId);
+  }
+
+  window.addEventListener('scroll', updateActiveNavLink, { passive: true });
+  window.addEventListener('resize', updateActiveNavLink, { passive: true });
+  updateActiveNavLink();
+
+  // 5.2 Botón Flotante de Urgencias: Reducir a círculo con llave abajo de la sección de servicios
+  const floatingRepairBtn = document.querySelector('.floating-repair-btn');
+  const serviciosSection = document.getElementById('servicios');
+
+  function updateFloatingRepairBtnState() {
+    if (!floatingRepairBtn || !serviciosSection) return;
+    const rect = serviciosSection.getBoundingClientRect();
+    // Cuando la sección de servicios ya quedó desplazada por encima de la pantalla
+    if (rect.bottom < 100) {
+      floatingRepairBtn.classList.add('is-collapsed');
+    } else {
+      floatingRepairBtn.classList.remove('is-collapsed');
+    }
+  }
+
+  window.addEventListener('scroll', updateFloatingRepairBtnState, { passive: true });
+  updateFloatingRepairBtnState();
 
   // 6. Listeners de Eventos del Menú Móvil (Toggle, Clic Fuera y Escape)
   if (menuBtn && mobileMenu) {
@@ -319,44 +425,107 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => el.classList.add('revealed'));
   }
 
-  // 8. Manejo de Subida de Imagen y Previsualización en el Cotizador
+  // 8. Manejo de Subida Multi-Imagen y Previsualización en el Cotizador (Hasta 4 fotos)
   const quoteImageInput = document.getElementById('quote-image');
   const uploadPrompt = document.getElementById('upload-prompt');
   const previewContainer = document.getElementById('image-preview-container');
-  const previewThumb = document.getElementById('image-preview-thumb');
-  const previewName = document.getElementById('image-preview-name');
-  const previewSize = document.getElementById('image-preview-size');
-  const removeImageBtn = document.getElementById('remove-image-btn');
-  let selectedImageFile = null;
+  const multiImageGrid = document.getElementById('multi-image-grid');
+  const previewCountLabel = document.getElementById('preview-count-label');
+  const removeAllImagesBtn = document.getElementById('remove-all-images-btn');
+  let selectedImageFiles = []; // Almacena hasta 4 elementos { file, dataUrl }
 
-  function handleImageFile(file) {
-    if (!file || !file.type.startsWith('image/')) return;
-    selectedImageFile = file;
+  function renderMultiImagePreviews() {
+    if (!multiImageGrid) return;
+    multiImageGrid.innerHTML = '';
 
-    const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-    const sizeText = file.size < 1024 * 1024 
-      ? `${(file.size / 1024).toFixed(0)} KB` 
-      : `${sizeInMB} MB`;
+    if (selectedImageFiles.length === 0) {
+      if (previewContainer) previewContainer.classList.add('hidden');
+      if (uploadPrompt) uploadPrompt.classList.remove('hidden');
+      if (quoteImageInput) quoteImageInput.value = '';
+      return;
+    }
 
-    if (previewName) previewName.textContent = file.name;
-    if (previewSize) previewSize.textContent = sizeText;
+    if (previewContainer) previewContainer.classList.remove('hidden');
+    if (previewCountLabel) {
+      previewCountLabel.textContent = `Fotos seleccionadas (${selectedImageFiles.length}/4)`;
+    }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      if (previewThumb) previewThumb.src = e.target.result;
-      if (uploadPrompt) uploadPrompt.classList.add('hidden');
-      if (previewContainer) previewContainer.classList.remove('hidden');
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+    if (uploadPrompt) {
+      if (selectedImageFiles.length >= 4) {
+        uploadPrompt.classList.add('hidden');
+      } else {
+        uploadPrompt.classList.remove('hidden');
       }
-    };
-    reader.readAsDataURL(file);
+    }
+
+    selectedImageFiles.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'multi-image-card';
+
+      const sizeInMB = (item.file.size / (1024 * 1024)).toFixed(1);
+      const sizeText = item.file.size < 1024 * 1024 
+        ? `${(item.file.size / 1024).toFixed(0)} KB` 
+        : `${sizeInMB} MB`;
+
+      card.innerHTML = `
+        <img src="${item.dataUrl}" alt="Foto ${index + 1}">
+        <button type="button" class="remove-btn" data-index="${index}" title="Eliminar foto">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+        <div class="card-info">
+          <p class="text-[10px] font-bold text-[#0B2545] truncate">${item.file.name}</p>
+          <p class="text-[9px] text-slate-500">${sizeText}</p>
+        </div>
+      `;
+
+      const removeBtn = card.querySelector('.remove-btn');
+      if (removeBtn) {
+        removeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectedImageFiles.splice(index, 1);
+          renderMultiImagePreviews();
+        });
+      }
+
+      multiImageGrid.appendChild(card);
+    });
+
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  }
+
+  function addFiles(files) {
+    if (!files || files.length === 0) return;
+    const remainingSlots = 4 - selectedImageFiles.length;
+    if (remainingSlots <= 0) {
+      alert('Solo se permite subir un máximo de 4 fotografías de referencia.');
+      return;
+    }
+
+    const filesToAdd = Array.from(files).filter(f => f.type.startsWith('image/')).slice(0, remainingSlots);
+
+    let loadedCount = 0;
+    filesToAdd.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        selectedImageFiles.push({
+          file: file,
+          dataUrl: e.target.result
+        });
+        loadedCount++;
+        if (loadedCount === filesToAdd.length) {
+          renderMultiImagePreviews();
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   if (quoteImageInput) {
     quoteImageInput.addEventListener('change', (e) => {
-      if (e.target.files && e.target.files[0]) {
-        handleImageFile(e.target.files[0]);
+      if (e.target.files) {
+        addFiles(e.target.files);
       }
     });
   }
@@ -385,21 +554,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     uploadPrompt.addEventListener('drop', (e) => {
       const dt = e.dataTransfer;
-      if (dt.files && dt.files[0]) {
-        quoteImageInput.files = dt.files;
-        handleImageFile(dt.files[0]);
+      if (dt.files) {
+        addFiles(dt.files);
       }
     });
   }
 
-  if (removeImageBtn) {
-    removeImageBtn.addEventListener('click', (e) => {
+  if (removeAllImagesBtn) {
+    removeAllImagesBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      selectedImageFile = null;
-      if (quoteImageInput) quoteImageInput.value = '';
-      if (previewThumb) previewThumb.src = '';
-      if (previewContainer) previewContainer.classList.add('hidden');
-      if (uploadPrompt) uploadPrompt.classList.remove('hidden');
+      selectedImageFiles = [];
+      renderMultiImagePreviews();
     });
   }
 
@@ -414,13 +579,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const name = document.getElementById('quote-name')?.value.trim() || 'Cliente';
       const notes = document.getElementById('quote-notes')?.value.trim() || 'Deseo más información y cotización.';
       
-      const hasImage = selectedImageFile !== null;
-      const imageText = hasImage 
-        ? `%0A📸 *Foto de Referencia:* Sí, adjunto fotografía en este chat para evaluación técnica.` 
+      const photoCount = selectedImageFiles.length;
+      const imageText = photoCount > 0 
+        ? `%0A📸 *Fotos de Referencia:* ${photoCount} imagen(es) seleccionada(s) (adjunto fotografías en este chat para evaluación técnica).` 
         : '';
 
       const phoneNumber = '526183032358';
-      const textMessage = `¡Hola SSA Durango! 🛠️%0A%0A*SOLICITUD DE COTIZACIÓN WEB*%0A👤 *Nombre:* ${encodeURIComponent(name)}%0A🔧 *Servicio de Interés:* ${encodeURIComponent(service)}%0A🏢 *Tipo de Inmueble:* ${encodeURIComponent(type)}%0A📝 *Detalles:* ${encodeURIComponent(notes)}${imageText}%0A%0A_Enviado desde el portal web ssa-durango._`;
+      const textMessage = `¡Hola SSA Durango! 🛠️%0A%0A*SOLICITUD DE COTIZACIÓN WEB*%0A👤 *Nombre:* ${encodeURIComponent(name)}%0A🔧 *Servicio:* ${encodeURIComponent(service)}%0A🏢 *Tipo de Inmueble:* ${encodeURIComponent(type)}%0A📝 *Detalles:* ${encodeURIComponent(notes)}${imageText}%0A%0A_Enviado desde el portal web ssa-durango._`;
       
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${textMessage}`;
       window.open(whatsappUrl, '_blank');
@@ -433,10 +598,30 @@ document.addEventListener('DOMContentLoaded', () => {
     b2bForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('b2b-name')?.value.trim() || 'Profesional';
-      const role = document.getElementById('b2b-role')?.value || 'Instalador';
-      const phone = document.getElementById('b2b-phone')?.value.trim() || '';
+      const nameInput = document.getElementById('b2b-name');
+      const phoneInput = document.getElementById('b2b-phone');
+      const errorMsg = document.getElementById('b2b-error-msg');
+      const name = nameInput?.value.trim() || '';
+      const phone = phoneInput?.value.trim() || '';
+      const role = document.getElementById('b2b-role')?.value || 'Herrero independiente / Taller de Herrería';
       const notes = document.getElementById('b2b-notes')?.value.trim() || 'Equipos y refacciones en general';
+
+      // Validación limpia en JS sin cuadros de diálogo nativos del navegador ("Completa este campo")
+      if (!name || !phone) {
+        if (errorMsg) errorMsg.classList.remove('hidden');
+        if (!name && nameInput) {
+          nameInput.classList.add('border-brand-orange', 'bg-orange-50/50');
+          nameInput.focus();
+        } else if (!phone && phoneInput) {
+          phoneInput.classList.add('border-brand-orange', 'bg-orange-50/50');
+          phoneInput.focus();
+        }
+        return;
+      }
+
+      if (errorMsg) errorMsg.classList.add('hidden');
+      if (nameInput) nameInput.classList.remove('border-brand-orange', 'bg-orange-50/50');
+      if (phoneInput) phoneInput.classList.remove('border-brand-orange', 'bg-orange-50/50');
 
       const phoneNumber = '526183032358';
       const b2bMessage = `¡Hola SSA Durango! 🤝%0A%0A*REGISTRO RED DE ALIADOS B2B*%0A👤 *Nombre:* ${encodeURIComponent(name)}%0A🔨 *Giro / Oficio:* ${encodeURIComponent(role)}%0A📱 *WhatsApp:* ${encodeURIComponent(phone)}%0A📦 *Interés / Refacciones:* ${encodeURIComponent(notes)}%0A%0A_Deseo registrarme para recibir precios preferenciales de mayoreo y catálogo de refacciones._`;
@@ -497,24 +682,28 @@ function quoteService(serviceName) {
       }
     }
 
-    // Mapeos por palabras clave de respaldo
+    // Mapeos por palabras clave de respaldo para las 10 divisiones oficiales
     if (!matchFound) {
-      if (cleanQuery.includes("mantenimiento") || cleanQuery.includes("reparacion")) {
-        serviceSelect.value = "Mantenimiento Preventivo y Correctivo";
-      } else if (cleanQuery.includes("porton") || cleanQuery.includes("motor")) {
-        serviceSelect.value = "Fabricación e Instalación de Portones";
-      } else if (cleanQuery.includes("celosia") || cleanQuery.includes("cnc") || cleanQuery.includes("premium")) {
-        serviceSelect.value = "✨ Portón Línea PREMIUM con Celosías CNC";
-      } else if (cleanQuery.includes("fraccionamiento") || cleanQuery.includes("privada") || cleanQuery.includes("barrera")) {
-        serviceSelect.value = "Acceso para Fraccionamientos y Privadas";
-      } else if (cleanQuery.includes("cerradura") || cleanQuery.includes("smart") || cleanQuery.includes("huella")) {
-        serviceSelect.value = "Cerraduras Digitales & Control Smart";
-      } else if (cleanQuery.includes("clima") || cleanQuery.includes("minisplit")) {
-        serviceSelect.value = "Instalación y Mantenimiento de Minisplits";
-      } else if (cleanQuery.includes("control") || cleanQuery.includes("accesorio")) {
-        serviceSelect.value = "Venta de Controles Remotos y Accesorios";
-      } else if (cleanQuery.includes("herreria") || cleanQuery.includes("puerta")) {
-        serviceSelect.value = "Herrería Residencial & Puertas a Medida";
+      if (cleanQuery.includes("mantenimiento") || cleanQuery.includes("reparacion") || cleanQuery.includes("falla") || cleanQuery.includes("diagnostico") || cleanQuery.includes("tecnico")) {
+        serviceSelect.value = "Mantenimiento o Reparación Técnica";
+      } else if (cleanQuery.includes("fabricacion") || cleanQuery.includes("nuevo")) {
+        serviceSelect.value = "Fabricación de Portón Nuevo";
+      } else if (cleanQuery.includes("automatizacion") || cleanQuery.includes("motor") || cleanQuery.includes("porton")) {
+        serviceSelect.value = "Automatización de Portón Existente";
+      } else if (cleanQuery.includes("celosia") || cleanQuery.includes("cnc") || cleanQuery.includes("herreria") || cleanQuery.includes("puerta")) {
+        serviceSelect.value = "Herrería Residencial & Celosías CNC";
+      } else if (cleanQuery.includes("fraccionamiento") || cleanQuery.includes("privada") || cleanQuery.includes("barrera") || cleanQuery.includes("rfid")) {
+        serviceSelect.value = "Control de Acceso a Fraccionamientos / Privadas";
+      } else if (cleanQuery.includes("comercial") || cleanQuery.includes("checador") || cleanQuery.includes("personal") || cleanQuery.includes("oficina")) {
+        serviceSelect.value = "Control de Acceso Comercial & Checador de Personal";
+      } else if (cleanQuery.includes("cerradura") || cleanQuery.includes("smart") || cleanQuery.includes("digital") || cleanQuery.includes("huella")) {
+        serviceSelect.value = "Cerraduras Inteligentes";
+      } else if (cleanQuery.includes("clima") || cleanQuery.includes("minisplit") || cleanQuery.includes("aire")) {
+        serviceSelect.value = "Instalación o Servicio de Minisplit";
+      } else if (cleanQuery.includes("control") || cleanQuery.includes("bateria") || cleanQuery.includes("refaccion")) {
+        serviceSelect.value = "Controles, Baterías y Refacciones";
+      } else {
+        serviceSelect.value = "Otro Servicio / Cotización General";
       }
     }
   }
