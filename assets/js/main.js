@@ -246,8 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4.2 Carruseles Móviles Adicionales (< 768px): Fraccionamientos, Climas, Mantenimiento, Proceso SSA y Testimonios
+  // 4.2 Carruseles Móviles Adicionales (< 768px): Fraccionamientos, Climas, Mantenimiento, Checador / Control Acceso, Proceso SSA y Testimonios
   const additionalMobileSwipers = [
+    { selector: '.checador-swiper', next: '.checador-next-btn', prev: '.checador-prev-btn', pagination: '.checador-swiper-pagination' },
     { selector: '.fraccionamientos-swiper', next: '.fraccionamientos-next-btn', prev: '.fraccionamientos-prev-btn', pagination: '.fraccionamientos-swiper-pagination' },
     { selector: '.climas-swiper', next: '.climas-next-btn', prev: '.climas-prev-btn', pagination: '.climas-swiper-pagination' },
     { selector: '.mantenimiento-swiper', next: '.mantenimiento-next-btn', prev: '.mantenimiento-prev-btn', pagination: '.mantenimiento-swiper-pagination' },
