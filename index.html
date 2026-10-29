@@ -65,10 +65,10 @@
   <div id="sweep-laser"></div>
 
   <!-- =========================================================================
-       1. TOP BAR / CINTILLO SUPERIOR (DIVIDIDO EN DOS EXTREMOS)
+       1. TOP BAR / CINTILLO SUPERIOR (ALINEADO EXACTO AL CONTENEDOR CENTRAL)
        ========================================================================= -->
-  <div class="hidden sm:block bg-[#0B2545] text-slate-200 py-2 px-3 sm:px-6 text-xs sm:text-[12.5px] border-b border-blue-900/40">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-center sm:text-left font-medium tracking-wide">
+  <div class="hidden sm:block bg-[#0B2545] text-slate-200 py-2 border-b border-blue-900/40 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-center sm:text-left font-medium tracking-wide">
       <div class="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 text-white">
         <span class="text-white font-semibold">SSA - Servicios, Soluciones y Automatización / Victoria de Durango</span>
       </div>
@@ -81,44 +81,43 @@
     </div>
   </div>
 
-  <!-- Header Principal con Glassmorphism Claro y Menú Equilibrado -->
-  <header id="main-nav" class="sticky top-0 z-50 glass-nav-light transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 flex items-center justify-between h-20 sm:h-24">
+  <!-- Header Principal con Glassmorphism Claro y Margen Idéntico al Contenido (max-w-7xl px-4 sm:px-6 lg:px-8) -->
+  <header id="main-nav" class="sticky top-0 z-50 glass-nav-light transition-all duration-300 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20 sm:h-24">
       
       <!-- Logo Oficial Ampliado al Máximo (Limpio sobre Fondo Blanco/Glass) -->
-      <a href="#inicio" class="header-logo-container group" title="SSA Durango - Inicio">
+      <a href="#inicio" class="header-logo-container group shrink-0" title="SSA Durango - Inicio">
         <img src="assets/images/logo-ssa.png" alt="SSA Durango - Servicios, Soluciones y Automatización" class="header-logo-img transition-transform group-hover:scale-105 duration-300">
       </a>
 
-      <!-- Desktop Navigation Links (Todas las Secciones Oficiales + Cotizador & Contacto) -->
-      <nav id="desktop-nav-links" class="hidden lg:flex items-center justify-center space-x-0.5 xl:space-x-1 font-semibold text-xs xl:text-[13px] text-[#0B2545] px-1">
-        <a href="#servicios" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Servicios</a>
-        <a href="#portones" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Portones & Motores</a>
-        <a href="#premium-celosias" class="nav-link-item px-2.5 py-1.5 rounded-lg text-[#B45309] bg-amber-50 hover:bg-amber-100 hover:text-amber-800 transition-all flex items-center gap-1 font-bold border border-amber-300 whitespace-nowrap shadow-sm">
+      <!-- Desktop Navigation Links (Menú Equilibrado y Espacioso) -->
+      <nav id="desktop-nav-links" class="hidden lg:flex items-center justify-center space-x-1 xl:space-x-2 font-semibold text-xs xl:text-[13px] text-[#0B2545]">
+        <a href="#servicios" class="nav-link-item px-2 xl:px-2.5 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Servicios</a>
+        <a href="#portones" class="nav-link-item px-2 xl:px-2.5 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Portones</a>
+        <a href="#premium-celosias" class="nav-link-item px-2.5 xl:px-3 py-1.5 rounded-lg text-[#B45309] bg-amber-50 hover:bg-amber-100 hover:text-amber-800 transition-all flex items-center gap-1 font-bold border border-amber-300 whitespace-nowrap shadow-sm">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-yellow shrink-0"></i>
-          <span>Línea Premium & CNC</span>
+          <span>Línea Premium</span>
         </a>
-        <a href="#fraccionamientos" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Fraccionamientos</a>
-        <a href="#cerraduras" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Cerraduras Smart</a>
-        <a href="#climas" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap flex items-center gap-1">
+        <a href="#fraccionamientos" class="nav-link-item px-2 xl:px-2.5 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Fraccionamientos</a>
+        <a href="#cerraduras" class="nav-link-item px-2 xl:px-2.5 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Cerraduras Smart</a>
+        <a href="#climas" class="nav-link-item px-2 xl:px-2.5 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap flex items-center gap-1">
           <i data-lucide="snowflake" class="w-3.5 h-3.5 text-sky-500"></i>
           <span>Climas</span>
         </a>
-        <a href="#mantenimiento" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Mantenimiento</a>
-        <a href="#cotizador" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Cotizador</a>
-        <a href="#contacto" class="nav-link-item px-2 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Contacto</a>
+        <a href="#mantenimiento" class="nav-link-item px-2 xl:px-2.5 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Mantenimiento</a>
+        <a href="#contacto" class="nav-link-item px-2 xl:px-2.5 py-1.5 rounded-lg hover:text-brand-orange hover:bg-slate-100 transition-all whitespace-nowrap">Contacto</a>
       </nav>
 
-      <!-- CTA Header Button: Dentro del Contenedor sin Desbordar -->
-      <div class="hidden sm:flex items-center space-x-2 shrink-0 pr-3 sm:pr-4 pl-1">
-        <a href="#cotizador" class="btn-primary-orange px-3 xl:px-4 py-1.5 xl:py-2 rounded-xl font-bold text-xs xl:text-[13px] flex items-center gap-1.5 whitespace-nowrap shadow-md">
+      <!-- CTA Header Button: Alineado perfectamente al límite derecho sin márgenes artificiales -->
+      <div class="hidden sm:flex items-center shrink-0">
+        <a href="#cotizador" class="btn-primary-orange px-3.5 xl:px-5 py-2 rounded-xl font-bold text-xs xl:text-[13px] flex items-center gap-1.5 whitespace-nowrap shadow-md">
           <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
           <span>Cotizar Ahora</span>
         </a>
       </div>
 
       <!-- Mobile Menu Button -->
-      <div class="lg:hidden flex items-center gap-2 pr-2 sm:pr-4">
+      <div class="lg:hidden flex items-center gap-2">
         <a href="#cotizador" class="sm:hidden p-2 rounded-xl bg-orange-50 text-brand-orange border border-orange-200" title="Cotizador SSA">
           <i data-lucide="calculator" class="w-4 h-4"></i>
         </a>
@@ -137,11 +136,11 @@
       </a>
       <a href="#portones" class="mobile-nav-link nav-link-item flex items-center gap-3 text-[#0B2545] font-semibold p-2.5 rounded-xl hover:bg-slate-100 hover:text-brand-orange transition-colors">
         <i data-lucide="warehouse" class="w-4 h-4 text-brand-orange"></i>
-        <span>1. Portones & Motores con Batería</span>
+        <span>1. Portones</span>
       </a>
       <a href="#premium-celosias" class="mobile-nav-link nav-link-item flex items-center gap-3 text-[#B45309] font-bold p-2.5 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors">
         <i data-lucide="sparkles" class="w-4 h-4 text-brand-yellow"></i>
-        <span>2. ✨ Línea Premium & Celosías CNC</span>
+        <span>2. ✨ Línea Premium</span>
       </a>
       <a href="#fraccionamientos" class="mobile-nav-link nav-link-item flex items-center gap-3 text-[#0B2545] font-semibold p-2.5 rounded-xl hover:bg-slate-100 hover:text-brand-orange transition-colors">
         <i data-lucide="shield-check" class="w-4 h-4 text-brand-blue"></i>
@@ -162,10 +161,6 @@
       <a href="#red-aliados" class="mobile-nav-link flex items-center gap-3 text-amber-800 font-bold p-2.5 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors">
         <i data-lucide="users" class="w-4 h-4 text-amber-600"></i>
         <span>Red de Instaladores & Herreros (B2B)</span>
-      </a>
-      <a href="#cotizador" class="mobile-nav-link nav-link-item flex items-center gap-3 text-[#0B2545] font-semibold p-2.5 rounded-xl hover:bg-slate-100 hover:text-brand-orange transition-colors">
-        <i data-lucide="calculator" class="w-4 h-4 text-brand-orange"></i>
-        <span>Cotizador Rápido</span>
       </a>
       <a href="#contacto" class="mobile-nav-link nav-link-item flex items-center gap-3 text-[#0B2545] font-semibold p-2.5 rounded-xl hover:bg-slate-100 transition-colors">
         <i data-lucide="map-pin" class="w-4 h-4 text-[#0B2545]"></i>
@@ -1187,78 +1182,125 @@
         <!-- =========================================================================
              SUBSECCIÓN COMERCIAL: CONTROL DE ACCESO Y CHECADOR PARA OFICINAS
              ========================================================================= -->
-        <div class="mt-8 sm:mt-10 bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-7 border border-slate-200 shadow-2xl reveal-init">
-          <div class="flex flex-col md:flex-row items-center justify-center gap-5 sm:gap-8 mb-6 max-w-3xl mx-auto text-center">
+        <div class="mt-8 sm:mt-12 reveal-init">
+          <div class="flex flex-col md:flex-row items-center justify-center gap-6 sm:gap-10 mb-8 max-w-4xl mx-auto text-center md:text-left">
             <div class="shrink-0 flex items-center justify-center">
-              <img src="assets/images/checador.png" alt="Checador y Control de Acceso Biométrico SSA Durango" class="w-28 sm:w-36 md:w-44 h-auto object-contain drop-shadow-xl hover:scale-105 transition-transform duration-300">
+              <img src="assets/images/checador.png" alt="Checador y Control de Acceso Biométrico SSA Durango" class="w-48 sm:w-60 md:w-72 lg:w-80 h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300">
             </div>
-            <div class="space-y-2 text-center md:text-left max-w-lg">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-brand-blue text-xs font-bold border border-blue-200">
-                <i data-lucide="building" class="w-3.5 h-3.5"></i>
+            <div class="space-y-3 max-w-xl">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 text-sky-300 text-xs font-bold border border-sky-400/30 backdrop-blur-md shadow-sm">
+                <i data-lucide="building" class="w-3.5 h-3.5 text-sky-400"></i>
                 <span>Soluciones para Empresas, Oficinas y Comercios</span>
               </div>
-              <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#0B2545] font-heading leading-tight">
+              <h3 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white font-heading leading-tight hero-text-shadow">
                 Control de Acceso Comercial y Control de Personal
               </h3>
-              <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+              <p class="text-slate-200 text-xs sm:text-sm leading-relaxed hero-text-shadow">
                 Protege tu negocio y administra los horarios de tu equipo. Instalamos sistemas integrados con controladoras de acceso, lectores biométricos (huella/rostro/tarjeta) y chapas magnéticas o contrachapas eléctricas. Restringe accesos por horarios, perfiles de empleado y lleva un registro detallado de entradas y salidas (checador) desde una sola plataforma.
               </p>
             </div>
           </div>
 
-          <!-- 4 Beneficios Clave del Sistema -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center gap-2.5 mb-1.5">
-                  <div class="w-8 h-8 rounded-xl bg-blue-100 text-brand-blue flex items-center justify-center shrink-0">
-                    <i data-lucide="clock" class="w-4 h-4"></i>
+          <!-- 4 Beneficios Clave del Sistema: Carrusel en Celular / Grid 4 Col en Desktop (Estilo idéntico a Fraccionamientos) -->
+          <div class="checador-swiper relative mb-6 sm:mb-8">
+            <div class="swiper-wrapper checador-grid-wrapper">
+
+              <!-- Ficha 1: Restricción por Horarios y Roles -->
+              <div class="swiper-slide h-auto">
+                <div class="bg-white/95 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xl flex flex-col justify-between h-full reveal-scale delay-100">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3.5">
+                      <div class="w-11 h-11 shrink-0 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center border border-blue-200">
+                        <i data-lucide="clock" class="w-5 h-5"></i>
+                      </div>
+                      <h3 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Restricción por Horarios y Roles</h3>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                      Define qué empleados pueden ingresar y en qué días u horarios específicos tienen permitido el acceso.
+                    </p>
                   </div>
-                  <h4 class="font-bold text-[#0B2545] text-xs sm:text-sm leading-snug">1. Restricción por Horarios y Roles</h4>
+                  <div class="pt-4 mt-4 border-t border-slate-100">
+                    <span class="text-[11px] font-bold text-sky-600 uppercase tracking-wider">CONTROL DE HORARIOS</span>
+                  </div>
                 </div>
-                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Define qué empleados pueden ingresar y en qué días u horarios específicos tienen permitido el acceso.</p>
               </div>
+
+              <!-- Ficha 2: Chapas Magnéticas y Pestillos -->
+              <div class="swiper-slide h-auto">
+                <div class="bg-white/95 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xl flex flex-col justify-between h-full reveal-scale delay-200">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3.5">
+                      <div class="w-11 h-11 shrink-0 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center border border-orange-200">
+                        <i data-lucide="shield" class="w-5 h-5"></i>
+                      </div>
+                      <h3 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Chapas Magnéticas y Pestillos</h3>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                      Integración con electroimanes de alto impacto, botones de salida para emergencia y liberadores de puerta.
+                    </p>
+                  </div>
+                  <div class="pt-4 mt-4 border-t border-slate-100">
+                    <span class="text-[11px] font-bold text-brand-orange uppercase tracking-wider">SEGURIDAD FÍSICA</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ficha 3: Control de Asistencia (Checador) -->
+              <div class="swiper-slide h-auto">
+                <div class="bg-white/95 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xl flex flex-col justify-between h-full reveal-scale delay-300">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3.5">
+                      <div class="w-11 h-11 shrink-0 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center border border-blue-200">
+                        <i data-lucide="user-check" class="w-5 h-5"></i>
+                      </div>
+                      <h3 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Control de Asistencia (Checador)</h3>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                      Exporta reportes de puntualidad, entradas, salidas y retardos del personal mediante huella o reconocimiento facial.
+                    </p>
+                  </div>
+                  <div class="pt-4 mt-4 border-t border-slate-100">
+                    <span class="text-[11px] font-bold text-brand-blue uppercase tracking-wider">REPORTE DE ASISTENCIA</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ficha 4: Respaldo de Energía Comercial -->
+              <div class="swiper-slide h-auto">
+                <div class="bg-white/95 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xl flex flex-col justify-between h-full reveal-scale delay-400">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3.5">
+                      <div class="w-11 h-11 shrink-0 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center border border-orange-200">
+                        <i data-lucide="battery-charging" class="w-5 h-5"></i>
+                      </div>
+                      <h3 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Respaldo de Energía Comercial</h3>
+                    </div>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                      Compatibilidad con fuentes de poder con respaldo de batería para mantener la puerta asegurada durante cortes de luz.
+                    </p>
+                  </div>
+                  <div class="pt-4 mt-4 border-t border-slate-100">
+                    <span class="text-[11px] font-bold text-brand-orange uppercase tracking-wider">RESPALDO DE ENERGÍA</span>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center gap-2.5 mb-1.5">
-                  <div class="w-8 h-8 rounded-xl bg-orange-100 text-brand-orange flex items-center justify-center shrink-0">
-                    <i data-lucide="shield" class="w-4 h-4"></i>
-                  </div>
-                  <h4 class="font-bold text-[#0B2545] text-xs sm:text-sm leading-snug">2. Chapas Magnéticas y Pestillos</h4>
-                </div>
-                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Integración con electroimanes de alto impacto, botones de salida para emergencia y liberadores de puerta.</p>
-              </div>
-            </div>
-
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center gap-2.5 mb-1.5">
-                  <div class="w-8 h-8 rounded-xl bg-blue-100 text-brand-blue flex items-center justify-center shrink-0">
-                    <i data-lucide="user-check" class="w-4 h-4"></i>
-                  </div>
-                  <h4 class="font-bold text-[#0B2545] text-xs sm:text-sm leading-snug">3. Control de Asistencia (Checador)</h4>
-                </div>
-                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Exporta reportes de puntualidad, entradas, salidas y retardos del personal mediante huella o reconocimiento facial.</p>
-              </div>
-            </div>
-
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center gap-2.5 mb-1.5">
-                  <div class="w-8 h-8 rounded-xl bg-orange-100 text-brand-orange flex items-center justify-center shrink-0">
-                    <i data-lucide="battery-charging" class="w-4 h-4"></i>
-                  </div>
-                  <h4 class="font-bold text-[#0B2545] text-xs sm:text-sm leading-snug">4. Respaldo de Energía Comercial</h4>
-                </div>
-                <p class="text-[11px] sm:text-xs text-slate-600 leading-relaxed">Compatibilidad con fuentes de poder con respaldo de batería para mantener la puerta asegurada durante cortes de luz.</p>
-              </div>
+            <!-- Controles Móvil (Flechas Izquierda / Derecha + Paginación) -->
+            <div class="flex md:hidden items-center justify-between gap-4 mt-8 px-2 max-w-xs mx-auto">
+              <button type="button" class="checador-prev-btn w-12 h-12 rounded-full bg-white text-[#0B2545] shadow-lg border border-slate-200 flex items-center justify-center hover:bg-brand-orange hover:text-white active:scale-90 transition-all disabled:opacity-30 disabled:pointer-events-none" aria-label="Paso anterior">
+                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+              </button>
+              <div class="checador-swiper-pagination flex justify-center items-center gap-1.5 flex-1"></div>
+              <button type="button" class="checador-next-btn w-12 h-12 rounded-full bg-white text-[#0B2545] shadow-lg border border-slate-200 flex items-center justify-center hover:bg-brand-orange hover:text-white active:scale-90 transition-all disabled:opacity-30 disabled:pointer-events-none" aria-label="Siguiente paso">
+                <i data-lucide="chevron-right" class="w-6 h-6"></i>
+              </button>
             </div>
           </div>
 
           <!-- Botón de Acción Naranja del Bloque -->
-          <div class="pt-2 text-center sm:text-left">
+          <div class="pt-2 text-center">
             <button onclick="quoteService('Control de Acceso Comercial & Checador de Personal')" class="btn-primary-orange px-6 sm:px-8 py-3.5 rounded-xl font-bold text-xs sm:text-sm md:text-base inline-flex items-center gap-2 shadow-xl">
               <i data-lucide="calculator" class="w-4 sm:w-5 h-4 sm:h-5"></i>
               <span>Cotizar Sistema para Negocio / Oficina</span>
@@ -1776,7 +1818,7 @@
               <div>
                 <div class="flex items-center gap-3 mb-2.5">
                   <div class="w-9 sm:w-10 h-9 sm:h-10 rounded-xl bg-blue-100 text-brand-blue flex items-center justify-center font-black text-xs sm:text-sm shrink-0 border border-blue-200">01</div>
-                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">01. Contacto & Asesoría Directa</h4>
+                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Contacto & Asesoría Directa</h4>
                 </div>
                 <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Escríbenos por WhatsApp o llámanos. Evaluamos tu requerimiento técnico o proyecto para ofrecerte la solución más adecuada y funcional.</p>
               </div>
@@ -1788,7 +1830,7 @@
               <div>
                 <div class="flex items-center gap-3 mb-2.5">
                   <div class="w-9 sm:w-10 h-9 sm:h-10 rounded-xl bg-orange-100 text-brand-orange flex items-center justify-center font-black text-xs sm:text-sm shrink-0 border border-orange-200">02</div>
-                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">02. Valoración & Cotización Clara</h4>
+                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Valoración & Cotización Clara</h4>
                 </div>
                 <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Revisamos los detalles de tu proyecto o acudimos a tu domicilio/privada en Durango para tomar medidas exactas y entregarte una cotización transparente, sin sorpresas.</p>
               </div>
@@ -1800,7 +1842,7 @@
               <div>
                 <div class="flex items-center gap-3 mb-2.5">
                   <div class="w-9 sm:w-10 h-9 sm:h-10 rounded-xl bg-blue-100 text-brand-blue flex items-center justify-center font-black text-xs sm:text-sm shrink-0 border border-blue-200">03</div>
-                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">03. Fabricación & Servicio Técnico</h4>
+                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Fabricación & Servicio Técnico</h4>
                 </div>
                 <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Nuestro personal técnico especializado realiza la fabricación, montaje o mantenimiento utilizando materiales adecuados, refacciones de calidad y herramientas profesionales.</p>
               </div>
@@ -1812,7 +1854,7 @@
               <div>
                 <div class="flex items-center gap-3 mb-2.5">
                   <div class="w-9 sm:w-10 h-9 sm:h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-xs sm:text-sm shrink-0 border border-amber-200">04</div>
-                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">04. Entrega, Pruebas & Garantía</h4>
+                  <h4 class="text-base sm:text-lg font-bold text-[#0B2545] font-heading leading-snug">Entrega, Pruebas & Garantía</h4>
                 </div>
                 <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Probamos el sistema contigo, configuramos tus controles o aplicaciones móviles, y te entregamos tu garantía por escrito.</p>
               </div>
