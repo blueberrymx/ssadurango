@@ -19,40 +19,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Función de Desplazamiento Suave con Barrido Lento y Curva Easing Elegante
   function smoothScrollWithSweep(targetId, duration = 1100) {
-    const targetElement = document.querySelector(targetId);
-    if (!targetElement) return;
-
-    const navHeight = document.getElementById('main-nav')?.offsetHeight || 75;
-    // Margen de respiro visual cómodo por ENCIMA del badge para que el texto arriba del título se lea con total claridad
-    const breathingSpaceAboveBadge = window.innerWidth < 640 ? 18 : 26;
-
-    // Localizar el badge o encabezado superior exacto de la sección de destino
-    let badge = null;
-    if (targetId === '#servicios') {
-      badge = targetElement.querySelector('[data-catalog-badge], .catalog-badge');
-    } else {
-      badge = targetElement.querySelector('[data-quote-badge], .tech-badge-dark, .inline-flex, span.uppercase');
-    }
-
     let targetPosition = 0;
-    if (badge) {
-      // Posición del badge calculada con suficiente espacio superior bajo la barra fija
-      const badgeRect = badge.getBoundingClientRect();
-      targetPosition = badgeRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+    let targetElement = null;
+
+    if (targetId === '#inicio' || targetId === '#') {
+      targetPosition = 0;
+      targetElement = document.getElementById('inicio');
     } else {
-      const targetRect = targetElement.getBoundingClientRect();
-      targetPosition = targetRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+      targetElement = document.querySelector(targetId);
+      if (!targetElement) return;
+
+      const navHeight = document.getElementById('main-nav')?.offsetHeight || 75;
+      // Margen de respiro visual cómodo por ENCIMA del badge para que el texto arriba del título se lea con total claridad
+      const breathingSpaceAboveBadge = window.innerWidth < 640 ? 18 : 26;
+
+      // Localizar el badge o encabezado superior exacto de la sección de destino
+      let badge = null;
+      if (targetId === '#servicios') {
+        badge = targetElement.querySelector('[data-catalog-badge], .catalog-badge');
+      } else if (targetId === '#control-acceso') {
+        badge = targetElement.querySelector('.inline-flex');
+      } else {
+        badge = targetElement.querySelector('[data-quote-badge], .tech-badge-dark, .inline-flex, span.uppercase');
+      }
+
+      if (badge) {
+        // Posición del badge calculada con suficiente espacio superior bajo la barra fija
+        const badgeRect = badge.getBoundingClientRect();
+        targetPosition = badgeRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+      } else {
+        const targetRect = targetElement.getBoundingClientRect();
+        targetPosition = targetRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+      }
+      targetPosition = Math.max(0, targetPosition);
     }
 
-    targetPosition = Math.max(0, targetPosition);
-    const startPosition = window.pageYOffset;
+    const startPosition = window.pageYOffset || document.documentElement.scrollTop;
     const distance = targetPosition - startPosition;
+    if (Math.abs(distance) < 5) return;
+
     let startTime = null;
 
     // Disparar efecto visual de barrido láser
-    laserBeam.classList.remove('active');
-    void laserBeam.offsetWidth; // Reflow
-    laserBeam.classList.add('active');
+    if (laserBeam) {
+      laserBeam.classList.remove('active');
+      void laserBeam.offsetWidth; // Reflow
+      laserBeam.classList.add('active');
+    }
 
     // Función de interpolación cúbica suave (Cubic EaseInOut)
     function easeInOutCubic(t, b, c, d) {
@@ -72,14 +85,24 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animationStep);
       } else {
         window.scrollTo(0, targetPosition);
-        setTimeout(() => {
-          laserBeam.classList.remove('active');
-        }, 200);
+        if (laserBeam) {
+          setTimeout(() => {
+            laserBeam.classList.remove('active');
+          }, 200);
+        }
 
-        // Pulso sutil en la sección destino
-        targetElement.classList.remove('target-section-sweep');
-        void targetElement.offsetWidth;
-        targetElement.classList.add('target-section-sweep');
+        if (targetId === '#inicio' || targetPosition === 0) {
+          // Limpiar estado activo de todos los enlaces del menú al llegar al inicio
+          const desktopNavLinks = document.querySelectorAll('#desktop-nav-links .nav-link-item');
+          desktopNavLinks.forEach(link => link.classList.remove('active-nav'));
+          const servicesBtn = document.getElementById('services-menu-btn');
+          if (servicesBtn) servicesBtn.classList.remove('active-nav');
+        } else if (targetElement) {
+          // Pulso sutil en la sección destino
+          targetElement.classList.remove('target-section-sweep');
+          void targetElement.offsetWidth;
+          targetElement.classList.add('target-section-sweep');
+        }
       }
     }
 
@@ -113,12 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Aplicar desplazamiento con barrido lento a todos los enlaces de anclaje (#)
+  // Aplicar desplazamiento suave cinemático a todos los enlaces de anclaje (#), incluidos logos e inicio
   const navLinks = document.querySelectorAll('a[href^="#"]');
   navLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
-      if (href && href.length > 1 && href.startsWith('#')) {
+      if (href && href.startsWith('#')) {
+        if (href === '#inicio' || href === '#') {
+          e.preventDefault();
+          smoothScrollWithSweep('#inicio', 1100);
+          closeMobileMenu();
+          return;
+        }
         const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
@@ -193,26 +222,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Botón de Pausa / Reproducción del Carrusel Hero
   const pauseBtn = document.getElementById('hero-pause-btn');
-  const pauseIcon = document.getElementById('hero-pause-icon');
   const pauseText = document.getElementById('hero-pause-text');
+
+  const setHeroPauseIcon = (iconName) => {
+    if (!pauseBtn) return;
+    const existingIcon = pauseBtn.querySelector('svg, i, [data-lucide]');
+    if (existingIcon) {
+      existingIcon.outerHTML = `<i id="hero-pause-icon" data-lucide="${iconName}" class="w-3.5 h-3.5"></i>`;
+      if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+      }
+    }
+  };
 
   if (pauseBtn) {
     pauseBtn.addEventListener('click', () => {
-      if (heroSwiper.autoplay.running) {
+      const isRunning = heroSwiper.autoplay && heroSwiper.autoplay.running;
+      if (isRunning) {
         heroSwiper.autoplay.stop();
         isAutoplayPaused = true;
-        if (pauseIcon) pauseIcon.setAttribute('data-lucide', 'play');
         if (pauseText) pauseText.textContent = 'Reanudar';
+        setHeroPauseIcon('play');
         pauseBtn.classList.add('border-brand-yellowLight', 'text-brand-yellowLight');
       } else {
         heroSwiper.autoplay.start();
         isAutoplayPaused = false;
-        if (pauseIcon) pauseIcon.setAttribute('data-lucide', 'pause');
         if (pauseText) pauseText.textContent = 'Pausar';
+        setHeroPauseIcon('pause');
         pauseBtn.classList.remove('border-brand-yellowLight', 'text-brand-yellowLight');
-      }
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
       }
     });
   }
@@ -297,68 +334,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5.1 Navbar Scrollspy Robusto con Detección Absoluta por BoundingClientRect
-  const trackedSectionIds = [
-    'servicios',
-    'portones',
-    'premium-celosias',
-    'fraccionamientos',
-    'cerraduras',
-    'climas',
-    'mantenimiento',
-    'cotizador',
-    'contacto'
-  ];
-
-  window.setActiveNav = function(sectionId) {
-    const links = document.querySelectorAll('#desktop-nav-links .nav-link-item, #mobile-menu .nav-link-item');
-    links.forEach(link => {
-      const href = link.getAttribute('href');
-      if (sectionId && href === `#${sectionId}`) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-  };
-
-  function updateActiveNavLink() {
-    // Si está al principio de la página (Hero), no activa ninguna pestaña secundaria
-    if (window.scrollY < 80) {
-      window.setActiveNav('');
-      return;
-    }
-
-    // Si llega al final absoluto de la página, activa contacto
-    if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 60)) {
-      window.setActiveNav('contacto');
-      return;
-    }
-
-    const navEl = document.getElementById('main-nav');
-    const headerHeight = navEl ? navEl.offsetHeight : 90;
-    const triggerLine = headerHeight + 60; // Línea virtual de visión activa
-
-    let activeId = '';
-
-    for (let i = 0; i < trackedSectionIds.length; i++) {
-      const id = trackedSectionIds[i];
-      const section = document.getElementById(id);
-      if (!section) continue;
-
-      const rect = section.getBoundingClientRect();
-      if (rect.top <= triggerLine && rect.bottom > triggerLine) {
-        activeId = id;
-        break;
-      }
-    }
-
-    window.setActiveNav(activeId);
-  }
-
-  window.addEventListener('scroll', updateActiveNavLink, { passive: true });
-  window.addEventListener('resize', updateActiveNavLink, { passive: true });
-  updateActiveNavLink();
+  // 5.1 Scrollspy gestionado por updateScrollSpy()
+  window.setActiveNav = function() { if (typeof updateScrollSpy === "function") updateScrollSpy(); };
 
   // 5.2 Botón Flotante de Urgencias: Reducir a círculo con llave abajo de la sección de servicios
   const floatingRepairBtn = document.querySelector('.floating-repair-btn');
@@ -367,8 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateFloatingRepairBtnState() {
     if (!floatingRepairBtn || !serviciosSection) return;
     const rect = serviciosSection.getBoundingClientRect();
-    // Cuando la sección de servicios ya quedó desplazada por encima de la pantalla
-    if (rect.bottom < 100) {
+    // Se compacta automáticamente desde el inicio de la sección de servicios
+    if (rect.top <= 150) {
       floatingRepairBtn.classList.add('is-collapsed');
     } else {
       floatingRepairBtn.classList.remove('is-collapsed');
@@ -737,3 +714,133 @@ function quoteService(serviceName) {
 }
 
 
+
+  // Manejo del Menú Desplegable de Servicios (Desktop y Touch)
+  const servicesBtn = document.getElementById('services-menu-btn');
+  const servicesDropdown = document.getElementById('services-dropdown-panel');
+  if (servicesBtn && servicesDropdown) {
+    servicesBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = servicesDropdown.classList.toggle('services-dropdown-open');
+      servicesBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!servicesBtn.contains(e.target) && !servicesDropdown.contains(e.target)) {
+        servicesDropdown.classList.remove('services-dropdown-open');
+        servicesBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    servicesDropdown.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        servicesDropdown.classList.remove('services-dropdown-open');
+        servicesBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // =========================================================================
+  // SCROLLSPY INTELIGENTE: SUBRAYADO ACTIVO EXCLUSIVO POR SECCIÓN
+  // =========================================================================
+  const desktopNavLinks = document.querySelectorAll('#desktop-nav-links .nav-link-item');
+  const servicesMenuBtn = document.getElementById('services-menu-btn');
+
+  // Secciones que activan exclusivamente el botón desplegable de Servicios
+  const serviceSectionIds = [
+    'servicios',
+    'portones',
+    'premium-celosias',
+    'fraccionamientos',
+    'cerraduras',
+    'climas',
+    'mantenimiento'
+  ];
+
+  function updateScrollSpy() {
+    // 1. Limpiar subrayado de todos los botones
+    desktopNavLinks.forEach(link => link.classList.remove('active-nav'));
+    if (servicesMenuBtn) servicesMenuBtn.classList.remove('active-nav');
+
+    // 2. Si estamos en el Hero / Inicio, ningún botón se activa
+    const serviciosEl = document.getElementById('servicios');
+    if (!serviciosEl) return;
+    const serviciosRect = serviciosEl.getBoundingClientRect();
+    if (serviciosRect.top > 180) {
+      return;
+    }
+
+    // 3. Si se llegó al final de la página (Footer / Contacto)
+    const isAtBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 80);
+    if (isAtBottom) {
+      const contactoLink = document.querySelector('#desktop-nav-links a[href="#contacto"]');
+      if (contactoLink) contactoLink.classList.add('active-nav');
+      return;
+    }
+
+    const focalPoint = 180;
+
+    // 4. Sección Contacto
+    const contactoEl = document.getElementById('contacto');
+    if (contactoEl) {
+      const r = contactoEl.getBoundingClientRect();
+      if (r.top <= focalPoint && r.bottom > focalPoint) {
+        const link = document.querySelector('#desktop-nav-links a[href="#contacto"]');
+        if (link) link.classList.add('active-nav');
+        return;
+      }
+    }
+
+    // 5. Sección Cotizador (no activa botón de texto, tiene su botón CTA naranja)
+    const cotizadorEl = document.getElementById('cotizador');
+    if (cotizadorEl) {
+      const r = cotizadorEl.getBoundingClientRect();
+      if (r.top <= focalPoint && r.bottom > focalPoint) {
+        return;
+      }
+    }
+
+    // 6. Sección Acerca de SSA o Testimonios
+    const acercaEl = document.getElementById('acerca-ssa');
+    const testimoniosEl = document.getElementById('testimonios');
+    let inAcerca = false;
+    if (acercaEl) {
+      const r = acercaEl.getBoundingClientRect();
+      if (r.top <= focalPoint && r.bottom > focalPoint) inAcerca = true;
+    }
+    if (testimoniosEl) {
+      const r = testimoniosEl.getBoundingClientRect();
+      if (r.top <= focalPoint && r.bottom > focalPoint) inAcerca = true;
+    }
+    if (inAcerca) {
+      const link = document.querySelector('#desktop-nav-links a[href="#acerca-ssa"]');
+      if (link) link.classList.add('active-nav');
+      return;
+    }
+
+    // 7. Sección Red de Aliados
+    const redAliadosEl = document.getElementById('red-aliados');
+    if (redAliadosEl) {
+      const r = redAliadosEl.getBoundingClientRect();
+      if (r.top <= focalPoint && r.bottom > focalPoint) {
+        const link = document.querySelector('#desktop-nav-links a[href="#red-aliados"]');
+        if (link) link.classList.add('active-nav');
+        return;
+      }
+    }
+
+    // 8. Secciones pertenecientes a Servicios
+    for (const sId of serviceSectionIds) {
+      const secEl = document.getElementById(sId);
+      if (secEl) {
+        const r = secEl.getBoundingClientRect();
+        if (r.top <= focalPoint && r.bottom > focalPoint) {
+          if (servicesMenuBtn) servicesMenuBtn.classList.add('active-nav');
+          return;
+        }
+      }
+    }
+  }
+
+  window.addEventListener('scroll', updateScrollSpy, { passive: true });
+  updateScrollSpy();
