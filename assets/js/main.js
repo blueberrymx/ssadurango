@@ -117,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeMobileMenu() {
     if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
       mobileMenu.classList.add('hidden');
+      document.body.classList.remove('mobile-menu-active');
+      document.documentElement.classList.remove('mobile-menu-active');
       if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
       if (menuIcon) {
         menuIcon.setAttribute('data-lucide', 'menu');
@@ -128,6 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function openMobileMenu() {
     if (mobileMenu) {
       mobileMenu.classList.remove('hidden');
+      document.body.classList.add('mobile-menu-active');
+      document.documentElement.classList.add('mobile-menu-active');
       if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
       if (menuIcon) {
         menuIcon.setAttribute('data-lucide', 'x');
@@ -358,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. Listeners de Eventos del Menú Móvil (Toggle, Clic Fuera y Escape)
   if (menuBtn && mobileMenu) {
     menuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
       const isHidden = mobileMenu.classList.contains('hidden');
       if (isHidden) {
