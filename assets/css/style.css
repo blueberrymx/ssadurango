@@ -1233,3 +1233,26 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 #services-menu-btn.active-nav::after {
   width: 85% !important;
 }
+
+/* ==========================================================================
+   CONTROL DE MENÚ MÓVIL (CERO DESPLAZAMIENTO / LAYOUT SHIFT DE PÁGINA)
+   ========================================================================== */
+body.mobile-menu-active {
+  overflow: hidden !important;
+  touch-action: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+#mobile-menu {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-height: calc(100vh - 85px) !important;
+  max-height: calc(100dvh - 85px) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain !important;
+  box-shadow: 0 20px 30px -10px rgba(11, 37, 69, 0.25), 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
