@@ -718,9 +718,13 @@ function quoteService(serviceName) {
   // Manejo del Menú Desplegable de Servicios (Desktop y Touch)
   const servicesBtn = document.getElementById('services-menu-btn');
   const servicesDropdown = document.getElementById('services-dropdown-panel');
+  const servicesGroup = servicesBtn?.closest('.group\\/dropdown') || servicesBtn?.parentElement;
+
   if (servicesBtn && servicesDropdown) {
     servicesBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (servicesGroup) servicesGroup.classList.remove('dropdown-force-closed');
+      servicesDropdown.classList.remove('dropdown-force-closed');
       const isOpen = servicesDropdown.classList.toggle('services-dropdown-open');
       servicesBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
@@ -732,12 +736,24 @@ function quoteService(serviceName) {
       }
     });
 
+    // Al hacer clic en cualquier servicio del dropdown: repliegue inmediato y visibilidad limpia
     servicesDropdown.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
+        if (servicesGroup) servicesGroup.classList.add('dropdown-force-closed');
+        servicesDropdown.classList.add('dropdown-force-closed');
         servicesDropdown.classList.remove('services-dropdown-open');
         servicesBtn.setAttribute('aria-expanded', 'false');
+        servicesBtn.blur();
       });
     });
+
+    // Al salir el cursor del contenedor de servicios, rehabilitar comportamiento normal
+    if (servicesGroup) {
+      servicesGroup.addEventListener('mouseleave', () => {
+        servicesGroup.classList.remove('dropdown-force-closed');
+        servicesDropdown.classList.remove('dropdown-force-closed');
+      });
+    }
   }
 
   // =========================================================================
@@ -753,6 +769,7 @@ function quoteService(serviceName) {
     'premium-celosias',
     'fraccionamientos',
     'cerraduras',
+    'control-acceso',
     'climas',
     'mantenimiento'
   ];
