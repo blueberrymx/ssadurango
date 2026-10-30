@@ -216,6 +216,22 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   visibility: visible !important;
   pointer-events: auto !important;
 }
+
+/* Repliegue forzado e inmediato del dropdown de servicios tras hacer clic */
+.dropdown-force-closed,
+.group\/dropdown.dropdown-force-closed #services-dropdown-panel,
+#services-dropdown-panel.dropdown-force-closed {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-8px) !important;
+  transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease !important;
+}
+
+.group\/dropdown.dropdown-force-closed #services-menu-btn i[data-lucide="chevron-down"],
+.group\/dropdown.dropdown-force-closed #services-menu-btn svg.lucide-chevron-down {
+  transform: rotate(0deg) !important;
+}
 .hero-text-shadow {
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95), 0 4px 28px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 1);
 }
