@@ -1983,7 +1983,7 @@
   <!-- =========================================================================
        10. ASISTENTE / CALCULADORA DE COTIZACIÓN RÁPIDA (WHATSAPP)
        ========================================================================= -->
-  <section id="cotizador" class="pt-8 sm:pt-12 pb-12 sm:pb-16 fixed-bg-section bg-section-contacto border-t border-blue-900/40 relative">
+  <section id="cotizador" class="pt-7 sm:pt-8 pb-10 sm:pb-14 fixed-bg-section bg-section-contacto border-t border-blue-900/40 relative">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       
       <!-- Cuadro Blanco de Formulario (Compacto y Enfocado con Título Integrado) -->
@@ -2046,48 +2046,6 @@
               <input type="text" id="quote-notes" placeholder="Ej. Portón para privada, cotización de 2 minisplits, cerradura para casa..." class="w-full bg-[#F8FAFC] border border-slate-300 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-[#0B2545] placeholder-slate-400 input-compact focus:outline-none focus:border-brand-orange transition-colors">
             </div>
 
-            <!-- Campo 5: Subir Fotos de Referencia o del Espacio Actual (Hasta 4 fotos) -->
-            <div class="col-span-1 md:col-span-2">
-              <label class="block text-xs sm:text-sm font-bold text-[#0B2545] mb-1 sm:mb-1.5 flex flex-wrap items-center justify-between gap-1">
-                <span>Fotografías de Referencia o del Espacio Actual (Opcional)</span>
-                <span class="text-[11px] font-normal text-slate-500">Portón actual, fachada, motor o medidas</span>
-              </label>
-
-              <!-- Dropzone / Selector de Archivo Múltiple -->
-              <div id="dropzone-container" class="relative">
-                <input type="file" id="quote-image" accept="image/*" multiple class="hidden">
-                
-                <!-- Área de subida inicial -->
-                <div id="upload-prompt" class="border-2 border-dashed border-slate-300 hover:border-brand-orange bg-[#F8FAFC] hover:bg-orange-50/40 rounded-2xl p-4 sm:p-5 text-center cursor-pointer transition-all duration-200 group flex flex-col items-center justify-center gap-2">
-                  <div class="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-orange-100/80 text-brand-orange flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <i data-lucide="camera" class="w-5 h-5"></i>
-                  </div>
-                  <div>
-                    <p class="text-xs sm:text-sm font-bold text-[#0B2545] group-hover:text-brand-orange transition-colors">
-                      Haz clic para subir fotos (portón actual, fachada, motor o medidas)
-                    </p>
-                    <p class="text-[11px] text-slate-500 mt-0.5">
-                      Formatos compatibles: JPG, PNG, WEBP, HEIC (hasta 4 fotos, máx. 15MB c/u)
-                    </p>
-                  </div>
-                </div>
-
-                <!-- Contenedor de Previsualización Múltiple (Oculto por defecto) -->
-                <div id="image-preview-container" class="hidden mt-3">
-                  <div class="flex items-center justify-between mb-2">
-                    <span id="preview-count-label" class="text-xs font-bold text-[#0B2545]">Fotos seleccionadas (0/4)</span>
-                    <button type="button" id="remove-all-images-btn" class="text-xs text-red-600 hover:text-red-700 font-semibold flex items-center gap-1 transition-colors">
-                      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                      <span>Eliminar todas</span>
-                    </button>
-                  </div>
-                  <div id="multi-image-grid" class="multi-image-grid">
-                    <!-- Se inyectan las tarjetas de fotos con JS -->
-                  </div>
-                </div>
-
-              </div>
-            </div>
 
           </div>
 
