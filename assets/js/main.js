@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 3. Función de Desplazamiento Suave con Barrido Lento y Curva Easing Elegante
-  function smoothScrollWithSweep(targetId, duration = 1100) {
+  function smoothScrollWithSweep(targetId, duration = 1100, onComplete = null) {
     let targetPosition = 0;
     let targetElement = null;
 
@@ -103,11 +103,19 @@ document.addEventListener('DOMContentLoaded', () => {
           void targetElement.offsetWidth;
           targetElement.classList.add('target-section-sweep');
         }
+
+        if (typeof onComplete === 'function') {
+          onComplete();
+        }
       }
     }
 
     requestAnimationFrame(animationStep);
   }
+
+  // Exponer smoothScrollWithSweep y closeMobileMenu en window para acceso global
+  window.smoothScrollWithSweep = smoothScrollWithSweep;
+  window.closeMobileMenu = closeMobileMenu;
 
   // 3.1 Controladores del Menú Móvil
   const menuBtn = document.getElementById('mobile-menu-btn');
@@ -155,8 +163,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
-          smoothScrollWithSweep(href, 1100);
           closeMobileMenu();
+          smoothScrollWithSweep(href, 1100, () => {
+            if (href === '#cotizador') {
+              const nameInput = document.getElementById('quote-name');
+              if (nameInput) {
+                nameInput.focus({ preventScroll: true });
+              }
+              const formCard = document.querySelector('#cotizador form');
+              if (formCard) {
+                formCard.classList.remove('ring-4', 'ring-[#FF6600]');
+                void formCard.offsetWidth;
+                formCard.classList.add('ring-4', 'ring-[#FF6600]', 'transition-all', 'duration-500', 'rounded-2xl');
+                setTimeout(() => {
+                  formCard.classList.remove('ring-4', 'ring-[#FF6600]');
+                }, 1400);
+              }
+            }
+          });
           if (typeof setActiveNav === 'function') {
             setActiveNav(href.replace('#', ''));
           }
@@ -647,16 +671,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función global para dirigir al Cotizador Inteligente y preseleccionar el servicio
 function quoteService(serviceName) {
-  const quoteSection = document.getElementById('cotizador');
   const serviceSelect = document.getElementById('quote-service');
   
   if (serviceSelect && serviceName) {
-    const cleanQuery = serviceName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const cleanQuery = serviceName.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
     let matchFound = false;
 
     for (let i = 0; i < serviceSelect.options.length; i++) {
-      const optVal = serviceSelect.options[i].value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const optText = serviceSelect.options[i].text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const optVal = serviceSelect.options[i].value.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+      const optText = serviceSelect.options[i].text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
       
       if (optVal.includes(cleanQuery) || cleanQuery.includes(optVal) || optText.includes(cleanQuery)) {
         serviceSelect.selectedIndex = i;
@@ -691,32 +714,48 @@ function quoteService(serviceName) {
     }
   }
 
-  // Desplazamiento suave con efecto láser
-  const targetElement = document.querySelector('#cotizador');
-  if (targetElement) {
-    const navHeight = document.getElementById('main-nav')?.offsetHeight || 70;
-    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - (navHeight - 10);
-    window.scrollTo({
-      top: targetPosition,
-      behavior: 'smooth'
-    });
+  // Cerrar menú móvil si estuviese abierto
+  if (typeof window.closeMobileMenu === 'function') {
+    window.closeMobileMenu();
   }
 
-  // Foco en el campo del nombre y resplandor sutil
-  setTimeout(() => {
-    const nameInput = document.getElementById('quote-name');
-    if (nameInput) {
-      nameInput.focus();
-    }
-    const formCard = document.querySelector('#cotizador form');
-    if (formCard) {
-      formCard.classList.add('ring-4', 'ring-[#FF6600]', 'transition-all', 'duration-500', 'rounded-2xl');
-      setTimeout(() => {
+  // Desplazamiento cinemático suave con curva Cubic EaseInOut y barrido láser (sin saltos bruscos)
+  if (typeof window.smoothScrollWithSweep === 'function') {
+    window.smoothScrollWithSweep('#cotizador', 1100, () => {
+      // Foco seguro con preventScroll para evitar cualquier salto nativo del navegador
+      const nameInput = document.getElementById('quote-name');
+      if (nameInput) {
+        nameInput.focus({ preventScroll: true });
+      }
+      const formCard = document.querySelector('#cotizador form');
+      if (formCard) {
         formCard.classList.remove('ring-4', 'ring-[#FF6600]');
-      }, 1400);
+        void formCard.offsetWidth; // Reflow para reiniciar animación
+        formCard.classList.add('ring-4', 'ring-[#FF6600]', 'transition-all', 'duration-500', 'rounded-2xl');
+        setTimeout(() => {
+          formCard.classList.remove('ring-4', 'ring-[#FF6600]');
+        }, 1400);
+      }
+    });
+  } else {
+    const targetElement = document.querySelector('#cotizador');
+    if (targetElement) {
+      const navHeight = document.getElementById('main-nav')?.offsetHeight || 75;
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - (navHeight + 20);
+      window.scrollTo({
+        top: Math.max(0, targetPosition),
+        behavior: 'smooth'
+      });
+      setTimeout(() => {
+        const nameInput = document.getElementById('quote-name');
+        if (nameInput) {
+          nameInput.focus({ preventScroll: true });
+        }
+      }, 1000);
     }
-  }, 700);
+  }
 }
+window.quoteService = quoteService;
 
 
 
