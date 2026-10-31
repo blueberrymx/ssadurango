@@ -33,23 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
       // Margen de respiro visual cómodo por ENCIMA del badge para que el texto arriba del título se lea con total claridad
       const breathingSpaceAboveBadge = window.innerWidth < 640 ? 18 : 26;
 
-      // Localizar el badge o encabezado superior exacto de la sección de destino
-      let badge = null;
-      if (targetId === '#servicios') {
-        badge = targetElement.querySelector('[data-catalog-badge], .catalog-badge');
-      } else if (targetId === '#control-acceso') {
-        badge = targetElement.querySelector('.inline-flex');
-      } else {
-        badge = targetElement.querySelector('[data-quote-badge], .tech-badge-dark, .inline-flex, span.uppercase');
-      }
-
-      if (badge) {
-        // Posición del badge calculada con suficiente espacio superior bajo la barra fija
-        const badgeRect = badge.getBoundingClientRect();
-        targetPosition = badgeRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
-      } else {
+      if (targetId === '#cotizador') {
+        // Alinear al top margin de la sección cotizador para visualizar la ficha completa desde el borde superior
         const targetRect = targetElement.getBoundingClientRect();
-        targetPosition = targetRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+        targetPosition = targetRect.top + window.pageYOffset - navHeight;
+      } else {
+        // Localizar el badge o encabezado superior exacto de la sección de destino
+        let badge = null;
+        if (targetId === '#servicios') {
+          badge = targetElement.querySelector('[data-catalog-badge], .catalog-badge');
+        } else if (targetId === '#control-acceso') {
+          badge = targetElement.querySelector('.inline-flex');
+        } else {
+          badge = targetElement.querySelector('.tech-badge-dark, .inline-flex, span.uppercase');
+        }
+
+        if (badge) {
+          // Posición del badge calculada con suficiente espacio superior bajo la barra fija
+          const badgeRect = badge.getBoundingClientRect();
+          targetPosition = badgeRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+        } else {
+          const targetRect = targetElement.getBoundingClientRect();
+          targetPosition = targetRect.top + window.pageYOffset - (navHeight + breathingSpaceAboveBadge);
+        }
       }
       targetPosition = Math.max(0, targetPosition);
     }
@@ -166,9 +172,11 @@ document.addEventListener('DOMContentLoaded', () => {
           closeMobileMenu();
           smoothScrollWithSweep(href, 1100, () => {
             if (href === '#cotizador') {
-              const nameInput = document.getElementById('quote-name');
-              if (nameInput) {
-                nameInput.focus({ preventScroll: true });
+              if (window.innerWidth >= 768) {
+                const nameInput = document.getElementById('quote-name');
+                if (nameInput) {
+                  nameInput.focus({ preventScroll: true });
+                }
               }
               const formCard = document.querySelector('#cotizador form');
               if (formCard) {
@@ -432,149 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => el.classList.add('revealed'));
   }
 
-  // 8. Manejo de Subida Multi-Imagen y Previsualización en el Cotizador (Hasta 4 fotos)
-  const quoteImageInput = document.getElementById('quote-image');
-  const uploadPrompt = document.getElementById('upload-prompt');
-  const previewContainer = document.getElementById('image-preview-container');
-  const multiImageGrid = document.getElementById('multi-image-grid');
-  const previewCountLabel = document.getElementById('preview-count-label');
-  const removeAllImagesBtn = document.getElementById('remove-all-images-btn');
-  let selectedImageFiles = []; // Almacena hasta 4 elementos { file, dataUrl }
-
-  function renderMultiImagePreviews() {
-    if (!multiImageGrid) return;
-    multiImageGrid.innerHTML = '';
-
-    if (selectedImageFiles.length === 0) {
-      if (previewContainer) previewContainer.classList.add('hidden');
-      if (uploadPrompt) uploadPrompt.classList.remove('hidden');
-      if (quoteImageInput) quoteImageInput.value = '';
-      return;
-    }
-
-    if (previewContainer) previewContainer.classList.remove('hidden');
-    if (previewCountLabel) {
-      previewCountLabel.textContent = `Fotos seleccionadas (${selectedImageFiles.length}/4)`;
-    }
-
-    if (uploadPrompt) {
-      if (selectedImageFiles.length >= 4) {
-        uploadPrompt.classList.add('hidden');
-      } else {
-        uploadPrompt.classList.remove('hidden');
-      }
-    }
-
-    selectedImageFiles.forEach((item, index) => {
-      const card = document.createElement('div');
-      card.className = 'multi-image-card';
-
-      const sizeInMB = (item.file.size / (1024 * 1024)).toFixed(1);
-      const sizeText = item.file.size < 1024 * 1024 
-        ? `${(item.file.size / 1024).toFixed(0)} KB` 
-        : `${sizeInMB} MB`;
-
-      card.innerHTML = `
-        <img src="${item.dataUrl}" alt="Foto ${index + 1}">
-        <button type="button" class="remove-btn" data-index="${index}" title="Eliminar foto">
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
-        </button>
-        <div class="card-info">
-          <p class="text-[10px] font-bold text-[#0B2545] truncate">${item.file.name}</p>
-          <p class="text-[9px] text-slate-500">${sizeText}</p>
-        </div>
-      `;
-
-      const removeBtn = card.querySelector('.remove-btn');
-      if (removeBtn) {
-        removeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          selectedImageFiles.splice(index, 1);
-          renderMultiImagePreviews();
-        });
-      }
-
-      multiImageGrid.appendChild(card);
-    });
-
-    if (typeof lucide !== 'undefined') {
-      lucide.createIcons();
-    }
-  }
-
-  function addFiles(files) {
-    if (!files || files.length === 0) return;
-    const remainingSlots = 4 - selectedImageFiles.length;
-    if (remainingSlots <= 0) {
-      alert('Solo se permite subir un máximo de 4 fotografías de referencia.');
-      return;
-    }
-
-    const filesToAdd = Array.from(files).filter(f => f.type.startsWith('image/')).slice(0, remainingSlots);
-
-    let loadedCount = 0;
-    filesToAdd.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        selectedImageFiles.push({
-          file: file,
-          dataUrl: e.target.result
-        });
-        loadedCount++;
-        if (loadedCount === filesToAdd.length) {
-          renderMultiImagePreviews();
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  if (quoteImageInput) {
-    quoteImageInput.addEventListener('change', (e) => {
-      if (e.target.files) {
-        addFiles(e.target.files);
-      }
-    });
-  }
-
-  if (uploadPrompt) {
-    uploadPrompt.addEventListener('click', () => {
-      if (quoteImageInput) quoteImageInput.click();
-    });
-
-    // Soporte para arrastrar y soltar (Drag & Drop)
-    ['dragenter', 'dragover'].forEach(eventName => {
-      uploadPrompt.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadPrompt.classList.add('border-brand-orange', 'bg-orange-50/60');
-      });
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-      uploadPrompt.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadPrompt.classList.remove('border-brand-orange', 'bg-orange-50/60');
-      });
-    });
-
-    uploadPrompt.addEventListener('drop', (e) => {
-      const dt = e.dataTransfer;
-      if (dt.files) {
-        addFiles(dt.files);
-      }
-    });
-  }
-
-  if (removeAllImagesBtn) {
-    removeAllImagesBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      selectedImageFiles = [];
-      renderMultiImagePreviews();
-    });
-  }
-
   // 9. Calculador y Generador de Cotizaciones WhatsApp
   const quoteForm = document.getElementById('quick-quote-form');
   if (quoteForm) {
@@ -586,13 +451,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const name = document.getElementById('quote-name')?.value.trim() || 'Cliente';
       const notes = document.getElementById('quote-notes')?.value.trim() || 'Deseo más información y cotización.';
       
-      const photoCount = selectedImageFiles.length;
-      const imageText = photoCount > 0 
-        ? `%0A📸 *Fotos de Referencia:* ${photoCount} imagen(es) seleccionada(s) (adjunto fotografías en este chat para evaluación técnica).` 
-        : '';
-
       const phoneNumber = '526183032358';
-      const textMessage = `¡Hola SSA Durango! 🛠️%0A%0A*SOLICITUD DE COTIZACIÓN WEB*%0A👤 *Nombre:* ${encodeURIComponent(name)}%0A🔧 *Servicio:* ${encodeURIComponent(service)}%0A🏢 *Tipo de Inmueble:* ${encodeURIComponent(type)}%0A📝 *Detalles:* ${encodeURIComponent(notes)}${imageText}%0A%0A_Enviado desde el portal web ssa-durango._`;
+      const textMessage = `¡Hola SSA Durango! 🛠️%0A%0A*SOLICITUD DE COTIZACIÓN WEB*%0A👤 *Nombre:* ${encodeURIComponent(name)}%0A🔧 *Servicio:* ${encodeURIComponent(service)}%0A🏢 *Tipo de Inmueble:* ${encodeURIComponent(type)}%0A📝 *Detalles:* ${encodeURIComponent(notes)}%0A%0A_Enviado desde el portal web ssa-durango._`;
       
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${textMessage}`;
       window.open(whatsappUrl, '_blank');
@@ -722,10 +582,12 @@ function quoteService(serviceName) {
   // Desplazamiento cinemático suave con curva Cubic EaseInOut y barrido láser (sin saltos bruscos)
   if (typeof window.smoothScrollWithSweep === 'function') {
     window.smoothScrollWithSweep('#cotizador', 1100, () => {
-      // Foco seguro con preventScroll para evitar cualquier salto nativo del navegador
-      const nameInput = document.getElementById('quote-name');
-      if (nameInput) {
-        nameInput.focus({ preventScroll: true });
+      // Foco seguro en pantallas de escritorio sin invocar teclado táctil móvil que desplace la vista
+      if (window.innerWidth >= 768) {
+        const nameInput = document.getElementById('quote-name');
+        if (nameInput) {
+          nameInput.focus({ preventScroll: true });
+        }
       }
       const formCard = document.querySelector('#cotizador form');
       if (formCard) {
@@ -741,7 +603,7 @@ function quoteService(serviceName) {
     const targetElement = document.querySelector('#cotizador');
     if (targetElement) {
       const navHeight = document.getElementById('main-nav')?.offsetHeight || 75;
-      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - (navHeight + 20);
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navHeight;
       window.scrollTo({
         top: Math.max(0, targetPosition),
         behavior: 'smooth'
